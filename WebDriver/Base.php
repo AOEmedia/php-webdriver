@@ -31,6 +31,11 @@ abstract class WebDriver_Base {
 	abstract protected function methods();
 
 	/**
+	 * @var string
+	 */
+	public static $debugFile;
+
+	/**
 	 * Return array of obsolete method names and corresponding HTTP request types
 	 *
 	 * @return array
@@ -106,6 +111,14 @@ abstract class WebDriver_Base {
 			}
 		} else if ($http_method == 'DELETE') {
 			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
+		}
+
+		if (!is_null(self::$debugFile)) {
+			$message = "$http_method: $url";
+			if ($http_method === 'POST') {
+				$message .= ' - ' . json_encode($params);
+			}
+			file_put_contents(self::$debugFile, "$message\n", FILE_APPEND);
 		}
 
 		foreach ($extra_opts as $option => $value) {
