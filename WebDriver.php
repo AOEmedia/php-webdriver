@@ -58,6 +58,11 @@ final class WebDriver extends WebDriver_Base {
 			array(CURLOPT_FOLLOWLOCATION => true)
 		);
 
+		if ($this->url . '/session' == $results['info']['url']) {
+			// in this case debug $raw_results of $this->curl as this might contain more inforamtion (e.g. when connecting to saucelabs)
+			throw new Exception('No sessionId found in return url. Connection failed');
+		}
+
 		return new WebDriver_Session($results['info']['url']);
 	}
 }
